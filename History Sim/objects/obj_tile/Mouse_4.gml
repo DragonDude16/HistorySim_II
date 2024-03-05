@@ -1,0 +1,1 @@
+obj_game.selected_tile = id;
