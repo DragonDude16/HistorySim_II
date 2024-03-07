@@ -7,7 +7,11 @@ randomize();
 
 population = 1
 
+globalProdMult = 1;
+
 knowledge = 0;
+techsResearched= [];
+techsPossible = refreshTechsPossible([]);
 
 food = 0;
 fertility = floor(random_range(2.5, 6)); //natural food productivity
@@ -45,6 +49,7 @@ function runYear(){
 	gainResources();
 	growPop();
 	//build();
+	learnTechs();
 }
 
 function growPop(){
@@ -63,12 +68,12 @@ function growPop(){
 }
 
 function gainResources(){
-	food += population * fertility * scr_qol(getQoL());
+	food += population * fertility * scr_qol(getQoL()) * globalProdMult;
 	food -= population;
 	food = minZero(food);
 	
 	//knowledge
-	knowledgeGain = population * 0.01;
+	knowledgeGain = population * 0.01 * globalProdMult;
 	num = random(1000);
 	if(num < 20){ 
 		knowledgeGain *= 10;	
@@ -79,7 +84,7 @@ function gainResources(){
 	knowledge += knowledgeGain;
 	
 	// wood
-	woodGain = population * forestDensity * scr_qol(getQoL());
+	woodGain = population * forestDensity * scr_qol(getQoL()) * globalProdMult;
 	woodLoss = population * (woodConsumption+woodBonusConsumption);
 	wood += woodGain;
 	wood -= woodLoss;
@@ -93,7 +98,36 @@ function gainResources(){
 }
 
 function learnTechs(){
-	//granaries	
+	if(array_length(techsPossible) == 0){
+		return;	
+	}
+	
+	techSelected = techsPossible[round(irandom(array_length(techsPossible)-1))];
+	show_debug_message(string(techsPossible));
+	
+	techCost = getTechCost(techSelected);
+	
+	if(knowledge >= techCost){
+		knowledge -= techCost;
+		array_push(techsResearched, techSelected);
+		array_delete(techsPossible, array_get_index(techsPossible, techSelected), 1);
+	
+		techsPossible = refreshTechsPossible(techsResearched);
+		
+		activateTech(techSelected);
+	}
+}
+
+function activateTech(tech){
+	switch(tech){
+		case "Organization I":
+			globalProdMult *= 2;
+		break;
+		
+		case "Organization II":
+			globalProdMult *= 1.5;
+		break;
+	}
 }
 
 function build(){

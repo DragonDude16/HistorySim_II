@@ -25,4 +25,12 @@ if(current_selected = "ideas"){
 
 if(current_selected = "tech"){
 	draw_text(1500, 100, "Knowledge: " + string(selected_tile.knowledge));
+	
+	for(var i = 0; i < array_length(selected_tile.techsResearched); i++){
+		draw_text(1500, 150+i*25, string(selected_tile.techsResearched[i]));
+	}
+	
+	if(array_length(selected_tile.techsResearched) == 0){
+		draw_text(1500, 150, "No technologies researched yet");
+	}
 }

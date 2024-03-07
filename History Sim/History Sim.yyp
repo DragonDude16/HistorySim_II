@@ -36,6 +36,7 @@
   },
   "resources": [
     {"id":{"name":"btn_nextyear100","path":"objects/btn_nextyear100/btn_nextyear100.yy",},},
+    {"id":{"name":"scr_techs","path":"scripts/scr_techs/scr_techs.yy",},},
     {"id":{"name":"spr_btn10","path":"sprites/spr_btn10/spr_btn10.yy",},},
     {"id":{"name":"Sprite9","path":"sprites/Sprite9/Sprite9.yy",},},
     {"id":{"name":"spr_btn_techs","path":"sprites/spr_btn_techs/spr_btn_techs.yy",},},
