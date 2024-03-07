@@ -6,15 +6,23 @@ town_name = "Brunswick";
 randomize();
 
 population = 1
-fertility = floor(random_range(1, 6)) + 0.5;
-forestDensity = random_range(.1, 1.5);
+
+knowledge = 0;
+
 food = 0;
-wood = 0;
-stone = 0;
+fertility = floor(random_range(2.5, 6)); //natural food productivity
 foodNextPop = 500;
 
-agricultureMult = 1;
-woodMult = 0.1;
+wood = 0;
+forestDensity = random_range(.5, 1.5); //natural abundance of wood
+woodConsumption = 0.1; //how much wood each pop needs / year 
+woodBonusConsumption = 0;  //extra wood consumed if there is a surplus
+woodQoL = 0;
+
+stone = 0;
+
+
+
 stoneMult = 0.01;
 
 irrigation = 0;
@@ -40,25 +48,52 @@ function runYear(){
 }
 
 function growPop(){
-	if(food < population){
+	if(food < population){ //starve if not enough food
 		population -= 1;
 		food = 0;
-		foodNextPop = floor(foodNextPop / 1.1);
+		foodNextPop = floor(foodNextPop / 3);
 	}
 	
-	if(food >= foodNextPop){
+	if(food >= foodNextPop){ //grow if enough food
 		food -= foodNextPop;
 		population += 1;
-		foodNextPop = floor(foodNextPop * 1.1);
+		foodNextPop = floor(foodNextPop * 3);
 	}
 	
 }
 
 function gainResources(){
-	food += fertility * agricultureMult * population * (1 + 0.5 * irrigation);
-	food -= power(population, 1.3);
-	wood += forestDensity * woodMult * population;
-	stone += stoneMult * population;
+	food += population * fertility * scr_qol(getQoL());
+	food -= population;
+	food = minZero(food);
+	
+	//knowledge
+	knowledgeGain = population * 0.01;
+	num = random(1000);
+	if(num < 20){ 
+		knowledgeGain *= 10;	
+	}
+	if(num < 2){
+		knowledgeGain *= random_range(50, 150);
+	}
+	knowledge += knowledgeGain;
+	
+	// wood
+	woodGain = population * forestDensity * scr_qol(getQoL());
+	woodLoss = population * (woodConsumption+woodBonusConsumption);
+	wood += woodGain;
+	wood -= woodLoss;
+	wood = minZero(wood);
+	if(woodLoss+0.01*population < woodGain){
+		woodBonusConsumption += 0.01;
+		woodQoL += 1;
+	}
+	
+	//stone += stoneMult * population;
+}
+
+function learnTechs(){
+	//granaries	
 }
 
 function build(){
@@ -67,4 +102,8 @@ function build(){
 		irrigation += 1;
 		irrigationCost *= 3;
 	}
+}
+
+function getQoL(){
+	return woodQoL;	
 }
