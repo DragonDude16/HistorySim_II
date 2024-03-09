@@ -89,8 +89,8 @@ function gainResources(){
 	wood += woodGain;
 	wood -= woodLoss;
 	wood = minZero(wood);
-	if(woodLoss+0.01*population < woodGain){
-		woodBonusConsumption += 0.01;
+	if(woodLoss+0.1*population < woodGain){
+		woodBonusConsumption += 0.1;
 		woodQoL += 1;
 	}
 	
